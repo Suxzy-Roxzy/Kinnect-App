@@ -37,7 +37,7 @@
   --sidebar-accent-foreground: oklch(0.3729 0.0306 259.7328);
   --sidebar-border: oklch(0.8717 0.0093 258.3382);
   --sidebar-ring: oklch(0.5854 0.2041 277.1173);
-  --font-sans: Inter, sans-serif;
+  --font-sans: Outfit, ui-sans-serif;
   --font-serif: Merriweather, serif;
   --font-mono: JetBrains Mono, monospace;
   --font-comme: "Comme", sans-serif;
@@ -190,7 +190,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-comme antialiased;
+    @apply bg-background text-foreground font-sans antialiased;
     letter-spacing: var(--tracking-normal);
   }
 
@@ -200,11 +200,11 @@
   h4,
   h5,
   h6 {
-    @apply font-google font-bold;
+    @apply font-sans font-bold;
   }
 
   p {
-    @apply font-google font-medium;
+    @apply font-sans font-medium;
   }
 }
 

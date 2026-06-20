@@ -1,14 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  ClipboardPaste,
-  DatabaseBackup,
-  DatabaseBackupIcon,
-  Handshake,
-  ShieldCheck,
-  ShieldCheckIcon,
-} from "lucide-react";
+import { DatabaseBackup, Handshake, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
 const LandingPageBody = () => (
@@ -26,7 +19,7 @@ const LandingPageBody = () => (
       WHAT CAN WE OFFER?
     </h3>
     <div className=" grid grid-cols-3 gap-6 pt-10">
-      <div className="bg-card rounded-lg p-15 items-center justify-center shadow-xl">
+      <div className="bg-card rounded-lg p-15 items-center justify-center shadow-xl dark:bg-[#98DFEA]">
         <ShieldCheck className="h-27 w-27 m-auto text-blue-900 text-shadow-accent" />
         <div className="flex flex-col justify-center items-center mt-4">
           <div className="text-2xl font-bold font-google text-blue-900">
@@ -37,7 +30,7 @@ const LandingPageBody = () => (
           </div>
         </div>
       </div>
-      <div className="bg-popover rounded-lg p-15 shadow-xl border-border">
+      <div className="bg-popover rounded-lg p-15 shadow-xl border-border dark:bg-[#98DFEA]">
         <DatabaseBackup className="h-27 w-27 m-auto text-blue-800" />
         <div className="flex flex-col justify-center items-center mt-4">
           <div className="text-2xl font-bold font-google text-blue-800">
@@ -48,7 +41,7 @@ const LandingPageBody = () => (
           </div>
         </div>
       </div>
-      <div className="bg-card rounded-lg p-15 shadow-xl border-border">
+      <div className="bg-card rounded-lg p-15 shadow-xl border-border dark:bg-[#98DFEA]s">
         <Handshake className="h-27 w-27 m-auto text-blue-900" />
         <div className="flex flex-col justify-center items-center mt-4">
           <div className="text-2xl font-bold font-google text-blue-900">
@@ -80,7 +73,7 @@ const LandingPageBody = () => (
       <Link href="/dashboard">
         <Button
           variant="secondary"
-          className="bg-primary p-6 text-white text-lg shadow-2xl border-border ring-ring ring-1"
+          className="bg-primary p-6 text-white text-lg shadow-2xl border-border ring-ring"
         >
           Get Started
         </Button>
@@ -88,7 +81,7 @@ const LandingPageBody = () => (
       <Link href="/about">
         <Button
           variant="secondary"
-          className="bg-primary p-6 text-white text-lg shadow-2xl border-border ring-ring ring-1"
+          className="bg-primary p-6 text-white text-lg shadow-2xl border-border ring-ring"
         >
           Learn More
         </Button>

@@ -3,12 +3,10 @@ import React from "react";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <>
-      <div>
-        <MainpageNav />
-      </div>
-      <div>{children}</div>
-    </>
+    <div>
+      <MainpageNav />
+      {children}
+    </div>
   );
 };
 

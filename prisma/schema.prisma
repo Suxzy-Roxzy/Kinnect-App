@@ -12,33 +12,71 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
-  id            String   @id @default(cuid())
-  email         String   @unique
-  password      String
-  name          String
-  address       String
-  phone         String
-  occupation    String
-  occupationBio String
-  isSingle      String
-  isMarried     String
-  state         String
-  bio           String
-  profile       String
-  DOB           String
-  LGA           String
-  city          String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id         String @id @default(cuid())
+  email      String @unique
+  password   String
+  first_name String
+  last_name  String
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  session     Session[]
+  memberships Membership[]
+}
+
+model Onboarding {
+  id             String   @id @default(cuid())
+  address        String
+  phone          String
+  occupation     String
+  occupationBio  String
+  marriagestatus String
+  state          String
+  bio            String
+  profile        String
+  religon        String
+  DOB            String
+  LGA            String
+  city           String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model Group {
+  id          String       @id @default(cuid())
+  groupName   String
+  groupBio    String
+  
+  memberships Membership[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Membership {
   id        String   @id @default(cuid())
-  groupName String
-  groupBio  String
+  userId    String
+  groupId   String
+  role      Role
+  user      User     @relation(fields: [userId], references: [id])
+  group     Group    @relation(fields: [groupId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([userId, groupId])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 }
 
 // model Admin {

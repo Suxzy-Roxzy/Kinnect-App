@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Comme, Courier_Prime, Google_Sans} from "next/font/google";
+import { Comme, Courier_Prime, Outfit } from "next/font/google";
 import "./globals.css";
+import Providers from "@/providers";
 
 const commeSans = Comme({
   variable: "--font-comme",
-  subsets:['latin']
-})
+  subsets: ["latin"],
+});
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -18,22 +19,22 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-
 const courierPrime = Courier_Prime({
   variable: "--font-courier",
   subsets: ["latin"],
-  weight:["400"]
+  weight: ["400"],
 });
 
-const googleSans = Google_Sans({
-  variable: "--font-google",
+const outfitSans = Outfit({
+  variable: "--font-sans",
   subsets: ["latin"],
-  weight:["400"]
+  weight: ["100","200","300","400","500","600","700"],
 });
 
 export const metadata: Metadata = {
   title: "Kinnects App",
-  description: "An online directory used to remain connected with far away relations and close individuals",
+  description:
+    "An online directory used to remain connected with far away relations and close individuals",
 };
 
 export default function RootLayout({
@@ -44,9 +45,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${courierPrime.variable} ${googleSans.variable} ${commeSans.variable} ${geistMono.variable} antialiased`}
+        className={`${outfitSans.variable} ${courierPrime.variable}  ${commeSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <Providers> {children}</Providers>
       </body>
     </html>
   );
