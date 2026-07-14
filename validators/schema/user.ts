@@ -25,8 +25,8 @@ import { z } from "zod";
 export const RegisterSchema = z.object({
   first_name: z.string().min(1),
   last_name: z.string().min(1),
-  email: z.string(),
-  password: z.string().min(8, "Pasword must be upto 8 charater"),
+  email: z.email("Please enter a valid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters long"),
 });
 
 export type RegisterSchematype = z.infer<typeof RegisterSchema>;

@@ -1,8 +1,9 @@
+
 import React from 'react'
 
 const LoginPage = () => {
   return (
-    <div>LoginPage</div>
+    <>Welcome to the Login Page</>
   )
 }
 

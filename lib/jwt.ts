@@ -5,12 +5,11 @@ const jwtSecret = JWT_SECRET;
 
 interface jwtPayload {
   userId: string;
-  sessionId: string;
 }
 
 export function signJwt(payLoad: jwtPayload, options?: SignOptions) {
   if (!jwtSecret) {
-    console.log("jwt Secret is not defined");
+    // console.log("jwt Secret is not defined");
     throw new Error("jwt Secret is not defined");
   }
 
