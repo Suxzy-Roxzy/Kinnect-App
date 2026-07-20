@@ -27,7 +27,6 @@ const RegistrationForm = ({
   const form = useForm<RegisterSchematype>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
-      // id: "",
       first_name: "",
       last_name: "",
       email: "",

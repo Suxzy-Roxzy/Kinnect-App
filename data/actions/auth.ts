@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { signJwt, verifyJwt } from "../../lib/jwt";
 import { prisma } from "../../lib/prisma";
 import { JwtPayload } from "jsonwebtoken";
-import { RegisterSchema } from "@/validators/schema/user";
+import { LoginSchema, RegisterSchema } from "@/validators/schema/user";
 import encrypt from "bcryptjs";
 import bycrpt from "bcryptjs";
 import bcrypt from "bcryptjs";
@@ -62,31 +62,37 @@ export async function registerUser(data: z.infer<typeof RegisterSchema>) {
 }
 
 // Now to create my lohin check
-export async function loginUser(email: string, password: string) {
-  // Check if user exists
-  const user = await prisma.user.findUnique({ where: { email } });
-if (!user) {
-  return {
-    success: false,
-    errors: {
-      email: ["Invalid email or password"],
-    },
-  };
-}
+export async function LoginUser(data: z.infer<typeof LoginSchema>) {
+  const { userEmail, userPassword } = data;
+  try {
+    // Check if user exists
+    const user = await prisma.user.findUnique({ where: { email: userEmail } });
+    if (!user) {
+      return {
+        success: false,
+        error: "User does not exist",
+      };
+    }
 
-  // Verify password
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-  if (!isPasswordValid) {
-     return {
-    success: false,
-    errors: {
-      email: ["Invalid email or password"],
-    },
-  };
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(userPassword, user.password);
+    if (!isPasswordValid) {
+      return {
+        success: false,
+        error: "Invalid email or password",
+      };
+    }
+
+    await loginUserSession(user.id);
+    // return user;
+    return {
+      success: true,
+      user,
+      error: null,
+    };
+  } catch (error) {
+    throw new Error("An error occurred during login.");
   }
-  
-  await loginUserSession(user.id);
-  return user;
 }
 
 // Create Server actions - creating a session( during login)

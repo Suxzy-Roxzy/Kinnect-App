@@ -1,4 +1,40 @@
-// 'use server'
+"use server";
+
+import { prisma } from "@/lib/prisma";
+
+// For getting a User by ID and displaying thier name and email
+export async function getUserById(userId: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { firstName: true, email: true },
+    });
+    if (!user) {
+      return { success: false, error: "User not found" };
+    }
+    return { success: true, data: user };
+  } catch (error) {
+    console.error("Failed to fetch user:", error);
+    return { success: false, error: "Failed to fetch user" };
+  }
+}
+
+// Getting the currentUser from the data base
+export async function getCurrentUser() {
+  try {
+    const user = await prisma.user.findFirst({
+      orderBy: { createdAt: "desc" },
+      select: { firstName: true, email: true },
+    });
+    if (!user) {
+      return { success: false, error: "User not found" };
+    }
+    return { success: true, data: user };
+  } catch (error) {
+    console.error("Failed to fetch current user:", error);
+    return { success: false, error: "Failed to fetch current user" };
+  }
+}
 
 // import { prisma } from '@/lib/prisma'
 // import { revalidatePath } from 'next/cache'

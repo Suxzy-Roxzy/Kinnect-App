@@ -1,9 +1,7 @@
-import React from 'react'
+"use client";
 
 const Page = () => {
-  return (
-    <div>Coming from the Main dashboard folder</div>
-  )
-}
+  return <div>Welcome to the Dashboard</div>;
+};
 
-export default Page
+export default Page;
