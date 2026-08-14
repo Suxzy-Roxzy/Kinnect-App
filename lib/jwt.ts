@@ -3,8 +3,8 @@ import jwt, { SignOptions } from "jsonwebtoken";
 
 const jwtSecret = JWT_SECRET;
 
-interface jwtPayload {
-  userId: string;
+export interface jwtPayload {
+  userId: string | undefined;
 }
 
 export function signJwt(payLoad: jwtPayload, options?: SignOptions) {

@@ -1,39 +1,103 @@
 "use server";
 
+import { jwtPayload, verifyJwt } from "@/lib/jwt";
 import { prisma } from "@/lib/prisma";
+import { cookies } from "next/headers";
 
-// For getting a User by ID and displaying thier name and email
-export async function getUserById(userId: string) {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { firstName: true, email: true },
-    });
-    if (!user) {
-      return { success: false, error: "User not found" };
-    }
-    return { success: true, data: user };
-  } catch (error) {
-    console.error("Failed to fetch user:", error);
-    return { success: false, error: "Failed to fetch user" };
+// revalidating token function
+export async function revalidateToken() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("session")?.value;
+  if (!token) {
+    return {
+      success: false,
+      error: "Token not found!",
+    };
+  }
+
+  const payload = verifyJwt<jwtPayload>(token);
+
+  if (!payload) {
+    return {
+      success: false,
+      error: "invalid Session!",
+    };
   }
 }
 
 // Getting the currentUser from the data base
 export async function getCurrentUser() {
-  try {
-    const user = await prisma.user.findFirst({
-      orderBy: { createdAt: "desc" },
-      select: { firstName: true, email: true },
-    });
-    if (!user) {
-      return { success: false, error: "User not found" };
-    }
-    return { success: true, data: user };
-  } catch (error) {
-    console.error("Failed to fetch current user:", error);
-    return { success: false, error: "Failed to fetch current user" };
+  const cookieStore = await cookies();
+  const token = cookieStore.get("session")?.value;
+
+  if (!token) {
+    return {
+      success: false,
+      error: "Token not found!",
+    };
   }
+
+  const payload = verifyJwt<jwtPayload>(token);
+
+  if (!payload) {
+    return {
+      success: false,
+      error: "invalid Session!",
+    };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: payload.userId,
+    },
+    omit: {
+      password: true,
+    },
+  });
+
+  if (!user) {
+    return {
+      success: false,
+      error: "User Not found!",
+    };
+  }
+
+  return {
+    success: true,
+    data: user,
+  };
+}
+
+// Deleting a user from the database
+export async function deleteUser() {
+  const cookieStore = await revalidateToken();
+  if (!cookieStore?.success) {
+    return {
+      success: false,
+      error: cookieStore?.error || "Failed to revalidate token",
+    };
+  }
+  const data = await getCurrentUser();
+  if (!data?.success) {
+    throw new Error(data?.error || "Failed to get current user");
+    // return {
+    //   success: false,
+    //   error: data?.error || "Failed to get current user",
+    // };
+  }
+
+  const userToDelete = await prisma.user.delete({
+    where: {
+      id: data?.data?.id,
+    },
+  });
+
+  return {
+    success: true,
+    message: "User deleted successfully",
+    data: userToDelete
+  };
+
 }
 
 // import { prisma } from '@/lib/prisma'

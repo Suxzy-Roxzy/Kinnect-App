@@ -1,12 +1,9 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { signJwt, verifyJwt } from "../../lib/jwt";
+import { jwtPayload, signJwt, verifyJwt } from "../../lib/jwt";
 import { prisma } from "../../lib/prisma";
-import { JwtPayload } from "jsonwebtoken";
 import { LoginSchema, RegisterSchema } from "@/validators/schema/user";
-import encrypt from "bcryptjs";
-import bycrpt from "bcryptjs";
 import bcrypt from "bcryptjs";
 import z from "zod";
 // import { toast } from "sonner";
@@ -61,7 +58,7 @@ export async function registerUser(data: z.infer<typeof RegisterSchema>) {
   return user;
 }
 
-// Now to create my lohin check
+// Now to create my login check
 export async function LoginUser(data: z.infer<typeof LoginSchema>) {
   const { userEmail, userPassword } = data;
   try {
@@ -99,7 +96,7 @@ export async function LoginUser(data: z.infer<typeof LoginSchema>) {
 export async function loginUserSession(userId: string) {
   const token = signJwt({ userId });
   const cookieStore = await cookies();
-  cookieStore.set("session", JSON.stringify(token), {
+  cookieStore.set("session", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
@@ -136,7 +133,7 @@ export async function loginUserSession(userId: string) {
 //   return session;
 // }
 
-export async function GetSessionUser() {
+export async function getUserId() {
   const cookieStore = await cookies();
   const token = cookieStore.get("session")?.value;
   if (!token) {
@@ -149,7 +146,7 @@ export async function GetSessionUser() {
   }
 
   //   verify token
-  const payLoad = verifyJwt<JwtPayload>(token);
+  const payLoad = verifyJwt<jwtPayload>(token);
   if (!payLoad) {
     return {
       success: false,
@@ -159,26 +156,10 @@ export async function GetSessionUser() {
     // return null;
   }
 
-  // Verify session in DB
-  const sessionData = await prisma.session.findUnique({
-    where: { id: payLoad.sessionId },
-    include: { user: true },
-  });
-
-  //   Expiration Check
-  if (sessionData && sessionData?.expiresAt < new Date()) {
-    await prisma.session.delete({ where: { id: sessionData.id } });
-    return {
-      success: false,
-      message: "Session expired.",
-    };
-    // return null;
-  }
-
-  // return {
-  // success: true,
-  // user: sessionData.user,
-  // };
+  return {
+    success: true,
+    userid: payLoad.userId,
+  };
 }
 
 // Deleting Token for LogOut
@@ -187,13 +168,11 @@ export async function DeleteToken() {
   const token = cookieData.get("session")?.value;
   if (!token) return null;
 
-  const payLoad = verifyJwt<JwtPayload>(token);
+  const payLoad = verifyJwt<jwtPayload>(token);
   if (payLoad) {
-    await prisma.session.delete({
-      where: { id: payLoad.sessionId },
-    });
+    const cookieDelete = await cookies();
+    cookieDelete.delete({ name: "session", path: "/" });
+  } else {
+    return null;
   }
-
-  const cookieDelete = await cookies();
-  cookieDelete.delete({ name: "session", path: "/" });
 }
